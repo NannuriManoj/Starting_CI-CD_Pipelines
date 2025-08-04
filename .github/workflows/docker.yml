@@ -26,6 +26,14 @@ jobs:
           COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)
           docker tag ${{ secrets.DOCKER_USERNAME }}/myfirst_ci_cd_pipeline:latest ${{ secrets.DOCKER_USERNAME }}/myfirst_ci_cd_pipeline:$COMMIT_SHA
 
+      - name: Testing the Docker image using trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ secrets.DOCKER_USERNAME }}/myfirst_ci_cd_pipeline:latest
+          format: table
+          exit-code: 0
+          ignore-unfixed: true
+      
       - name: Push images to DockerHub
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/myfirst_ci_cd_pipeline:latest
